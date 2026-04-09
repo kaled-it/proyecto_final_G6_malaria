@@ -3,176 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Predicción de Malaria - Minsa</title>
+    <title>Sistema de Vigilancia Epidemiológica - Malaria</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f4f8; 
+            color: #2d3748;
+        }
+        /* Estilo Institucional Salud */
+        .navbar-minsa {
+            background-color: #004a99; /* Azul Médico */
+            border-bottom: 4px solid #ce1212; /* Rojo Institucional */
+        }
+        .card { 
+            border: none; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .bg-medical-gradient {
+            background: linear-gradient(135deg, #004a99 0%, #007bff 100%);
+        }
+        .form-label { color: #4a5568; margin-bottom: 0.3rem; }
+        .form-select, .form-control {
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            padding: 0.6rem;
+        }
+        .form-select:focus, .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+        .result-box {
+            background-color: #ffffff;
+            border-left: 6px solid #004a99;
+        }
+        .btn-predict {
+            background-color: #004a99;
+            border: none;
+            padding: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-predict:hover {
+            background-color: #003366;
+            transform: translateY(-1px);
+        }
+        .table-container {
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+        }
+        .table thead {
+            background-color: #edf2f7;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+        .badge-cases {
+            background-color: #ebf8ff;
+            color: #2b6cb0;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 6px;
+        }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
-    <div class="container mt-5">
-        <div class="row mb-4">
-            <div class="col-12 text-center">
-                <h2 class="fw-bold text-success">Sistema Predictivo de Picos de Malaria</h2>
-                <p class="text-muted">Modelo de Machine Learning (Random Forest Regressor)</p>
-            </div>
+    <nav class="navbar navbar-minsa navbar-dark py-3 mb-5">
+        <div class="container">
+            <span class="navbar-brand fw-bold">🏥 PLATAFORMA DE VIGILANCIA EPIDEMIOLÓGICA</span>
+            <span class="badge bg-light text-primary">Versión 2.0 - ML Engine</span>
         </div>
+    </nav>
 
-        <div class="row">
-            <div class="col-md-5 mb-4">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0">Parámetros Epidemiológicos</h5>
+    <div class="container">
+        <div class="row g-4">
+            
+            <div class="col-lg-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-medical-gradient text-white py-3">
+                        <h5 class="mb-0 small fw-bold">PARÁMETROS DE CONSULTA</h5>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body p-4">
                         <form id="formularioPrediccion">
                             <div class="mb-3">
-                                <label for="departamento" class="form-label fw-bold">Departamento</label>
-                                <input type="text" class="form-control" id="departamento" placeholder="Ej: LORETO" required style="text-transform: uppercase;">
+                                <label class="form-label fw-semibold small">Departamento / Diresa</label>
+                                <select class="form-select" id="region" required>
+                                    <option value="" selected disabled>Cargando regiones...</option>
+                                </select>
                             </div>
+
                             <div class="mb-3">
-                                <label for="provincia" class="form-label fw-bold">Provincia</label>
-                                <input type="text" class="form-control" id="provincia" placeholder="Ej: MAYNAS" required style="text-transform: uppercase;">
+                                <label class="form-label fw-semibold small">Provincia Fokus</label>
+                                <select class="form-select" id="provincia" required disabled>
+                                    <option value="">Seleccione departamento</option>
+                                </select>
                             </div>
+
+                            <hr class="text-muted opacity-25">
+
                             <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="ano" class="form-label fw-bold">Año</label>
-                                    <input type="number" class="form-control" id="ano" min="2009" max="2100" placeholder="Ej: 2026" required>
+                                <div class="col-6 mb-3">
+                                    <label class="form-label fw-semibold small">Año Fiscal</label>
+                                    <input type="number" class="form-control" id="ano" min="2009" value="2026" required>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="semana" class="form-label fw-bold">Semana (1-53)</label>
-                                    <input type="number" class="form-control" id="semana" min="1" max="53" placeholder="Ej: 15" required>
+                                <div class="col-6 mb-3">
+                                    <label class="form-label fw-semibold small">Semana Epi.</label>
+                                    <input type="number" class="form-control" id="semana" min="1" max="53" value="1" required>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-success w-100 fw-bold">Generar Predicción</button>
+
+                            <button type="submit" class="btn btn-primary btn-predict w-100 mt-2 shadow-sm">
+                                GENERAR ESTIMACIÓN
+                            </button>
                         </form>
                     </div>
                 </div>
             </div>
-            
-            <div class="col-md-7">
+
+            <div class="col-lg-8">
                 
-                <div class="card shadow-sm border-success mb-4">
-                    <div class="card-body text-center py-4">
-                        <h5 class="text-success mb-3">Casos Esperados (Pico Semanal)</h5>
-                        <h1 id="resultadoNumero" class="display-3 fw-bold text-dark">-</h1>
-                        <p id="resultadoTexto" class="text-muted mb-0">Esperando datos de consulta...</p>
+                <div class="card result-box shadow-sm mb-4 py-4 px-4 d-flex flex-row align-items-center justify-content-between">
+                    <div>
+                        <h6 class="text-primary text-uppercase fw-bold mb-1 small">Incidencia Predicha</h6>
+                        <h1 id="resultadoNumero" class="display-3 fw-bold mb-0">--</h1>
+                        <p id="resultadoTexto" class="text-muted small mb-0 mt-1 italic">Esperando parámetros de entrada...</p>
+                    </div>
+                    <div class="d-none d-sm-block">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2855/2855546.png" width="80" style="opacity: 0.1;" alt="salud">
                     </div>
                 </div>
 
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                        <h6 class="mb-0">Historial de Consultas (Base de Datos)</h6>
-                        <button class="btn btn-sm btn-outline-light" onclick="cargarHistorial()">Actualizar</button>
+                <div class="card shadow-sm border-0 table-container">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center py-3 border-bottom">
+                        <h6 class="mb-0 fw-bold text-dark">REGISTROS RECIENTES</h6>
+                        <button class="btn btn-sm btn-outline-primary" onclick="cargarHistorial()">
+                            ↻ Sincronizar
+                        </button>
                     </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
-                            <table class="table table-hover table-striped mb-0 text-center">
-                                <thead class="table-light sticky-top">
-                                    <tr>
-                                        <th>Ubicación</th>
-                                        <th>Año / Sem</th>
-                                        <th>Predicción</th>
-                                        <th>Borrar</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tablaHistorial">
-                                    </tbody>
-                            </table>
-                        </div>
+                    <div class="table-responsive" style="max-height: 450px;">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">Área Geográfica</th>
+                                    <th>Temporalidad</th>
+                                    <th>Carga Proyectada</th>
+                                    <th class="text-center">Gestión</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaHistorial"></tbody>
+                        </table>
                     </div>
                 </div>
-
             </div>
+
         </div>
     </div>
 
     <script>
-        const formulario = document.getElementById('formularioPrediccion');
+        const selectReg = document.getElementById('region');
+        const selectProv = document.getElementById('provincia');
 
-        // Al cargar la página, traemos los datos de MySQL
-        document.addEventListener('DOMContentLoaded', cargarHistorial);
+        async function fetchAPI(url) {
+            const resp = await fetch(url);
+            return await resp.json();
+        }
 
-        // Evento cuando le damos click a "Generar Predicción"
-        formulario.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Evita que la página se recargue
+        // Carga inicial
+        document.addEventListener('DOMContentLoaded', async () => {
+            const regiones = await fetchAPI('/api/regiones');
+            selectReg.innerHTML = '<option value="" selected disabled>Seleccione Región...</option>';
+            regiones.forEach(r => selectReg.innerHTML += `<option value="${r}">${r}</option>`);
+            cargarHistorial();
+        });
 
-            // Recolectamos los datos del formulario
-            const datosEntrada = {
-                departamento: document.getElementById('departamento').value,
-                provincia: document.getElementById('provincia').value,
+        // Cascada: Región -> Provincia
+        selectReg.addEventListener('change', async () => {
+            const provincias = await fetchAPI(`/api/provincias?region=${selectReg.value}`);
+            selectProv.innerHTML = '<option value="" selected disabled>Seleccione Provincia...</option>';
+            selectProv.disabled = false;
+            provincias.forEach(p => selectProv.innerHTML += `<option value="${p}">${p}</option>`);
+        });
+
+        // Predicción
+        document.getElementById('formularioPrediccion').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const payload = {
+                region: selectReg.value,
+                provincia: selectProv.value,
                 ano: parseInt(document.getElementById('ano').value),
                 semana: parseInt(document.getElementById('semana').value)
             };
 
-            try {
-                // Enviamos los datos por POST a la ruta /predict de Flask
-                const respuesta = await fetch('/predict', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(datosEntrada)
-                });
+            const resp = await fetch('/predict', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
 
-                const resultado = await respuesta.json();
-
-                if (respuesta.ok) {
-                    // Mostramos el resultado en pantalla grande
-                    document.getElementById('resultadoNumero').innerText = resultado.casos_predichos.toFixed(2);
-                    document.getElementById('resultadoTexto').innerText = `En ${resultado.provincia}, ${resultado.departamento} para la sem. ${resultado.semana} del ${resultado.ano}`;
-                    
-                    // Recargamos la tabla para ver el nuevo dato guardado en la BD
-                    cargarHistorial();
-                } else {
-                    alert("Hubo un error procesando la predicción.");
-                }
-
-            } catch (error) {
-                console.error("Error en la petición:", error);
-                alert("No se pudo conectar con el servidor de Flask.");
-            }
+            const res = await resp.json();
+            document.getElementById('resultadoNumero').innerText = res.casos_predichos.toFixed(1);
+            document.getElementById('resultadoTexto').innerText = `Proyección epidemiológica para ${res.provincia}.`;
+            cargarHistorial();
         });
 
-        // Función para consultar todos los registros (ruta GET /registros)
         async function cargarHistorial() {
-            try {
-                const respuesta = await fetch('/registros');
-                const datos = await respuesta.json();
-                
-                const cuerpoTabla = document.getElementById('tablaHistorial');
-                cuerpoTabla.innerHTML = ''; // Limpiamos la tabla
-
-                // Invertimos el arreglo para ver los más nuevos arriba
-                datos.reverse().forEach(fila => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td class="text-start ps-3"><b>${fila.provincia}</b><br><small class="text-muted">${fila.departamento}</small></td>
-                        <td class="align-middle">${fila.ano} / S-${fila.semana.toString().padStart(2, '0')}</td>
-                        <td class="align-middle fw-bold text-danger">${fila.casos_predichos.toFixed(2)}</td>
-                        <td class="align-middle">
-                            <button class="btn btn-sm btn-outline-danger" onclick="borrarRegistro(${fila.id})">❌</button>
+            const data = await fetchAPI('/registros');
+            const tbody = document.getElementById('tablaHistorial');
+            tbody.innerHTML = '';
+            data.forEach(r => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold">${r.provincia}</div>
+                            <div class="text-muted x-small" style="font-size: 0.75rem;">${r.departamento}</div>
                         </td>
-                    `;
-                    cuerpoTabla.appendChild(tr);
-                });
-            } catch (error) {
-                console.error("Error cargando el historial:", error);
-            }
+                        <td>
+                            <span class="text-dark">A- ${r.ano}</span><br>
+                            <span class="badge bg-secondary" style="font-size: 0.65rem;">SE ${r.semana}</span>
+                        </td>
+                        <td>
+                            <span class="badge-cases fw-bold">${r.casos_predichos.toFixed(1)} casos</span>
+                        </td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-outline-danger border-0" onclick="borrar(${r.id})">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>`;
+            });
         }
 
-        // Función para borrar un registro de la BD (ruta DELETE /registro/<id>)
-        async function borrarRegistro(id) {
-            if (!confirm("¿Estás seguro de eliminar esta consulta histórica?")) return;
-
-            try {
-                const respuesta = await fetch(`/registro/${id}`, {
-                    method: 'DELETE'
-                });
-
-                if (respuesta.ok) {
-                    cargarHistorial(); // Refrescamos la tabla si se borró con éxito
-                }
-            } catch (error) {
-                console.error("Error al borrar:", error);
+        async function borrar(id) {
+            if(confirm('¿Desea eliminar este registro del historial clínico?')) {
+                await fetch(`/registro/${id}`, {method: 'DELETE'});
+                cargarHistorial();
             }
         }
     </script>
