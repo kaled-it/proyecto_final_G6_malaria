@@ -74,7 +74,7 @@
 
     <nav class="navbar navbar-minsa navbar-dark py-3 mb-5">
         <div class="container">
-            <span class="navbar-brand fw-bold">🏥 PLATAFORMA DE VIGILANCIA EPIDEMIOLÓGICA</span>
+            <span class="navbar-brand fw-bold">🏥 MODELO DE VIGILANCIA EPIDEMIOLÓGICA</span>
             <span class="badge bg-light text-primary">Versión 2.0 - ML Engine</span>
         </div>
     </nav>
@@ -90,14 +90,14 @@
                     <div class="card-body p-4">
                         <form id="formularioPrediccion">
                             <div class="mb-3">
-                                <label class="form-label fw-semibold small">Departamento / Diresa</label>
+                                <label class="form-label fw-semibold small">Departamento</label>
                                 <select class="form-select" id="region" required>
                                     <option value="" selected disabled>Cargando regiones...</option>
                                 </select>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label fw-semibold small">Provincia Fokus</label>
+                                <label class="form-label fw-semibold small">Provincia</label>
                                 <select class="form-select" id="provincia" required disabled>
                                     <option value="">Seleccione departamento</option>
                                 </select>
@@ -107,11 +107,11 @@
 
                             <div class="row">
                                 <div class="col-6 mb-3">
-                                    <label class="form-label fw-semibold small">Año Fiscal</label>
+                                    <label class="form-label fw-semibold small">Año</label>
                                     <input type="number" class="form-control" id="ano" min="2009" value="2026" required>
                                 </div>
                                 <div class="col-6 mb-3">
-                                    <label class="form-label fw-semibold small">Semana Epi.</label>
+                                    <label class="form-label fw-semibold small">Semana Epidemiologica</label>
                                     <input type="number" class="form-control" id="semana" min="1" max="53" value="1" required>
                                 </div>
                             </div>
@@ -128,7 +128,7 @@
                 
                 <div class="card result-box shadow-sm mb-4 py-4 px-4 d-flex flex-row align-items-center justify-content-between">
                     <div>
-                        <h6 class="text-primary text-uppercase fw-bold mb-1 small">Incidencia Predicha</h6>
+                        <h6 class="text-primary text-uppercase fw-bold mb-1 small">Estimación de casos:</h6>
                         <h1 id="resultadoNumero" class="display-3 fw-bold mb-0">--</h1>
                         <p id="resultadoTexto" class="text-muted small mb-0 mt-1 italic">Esperando parámetros de entrada...</p>
                     </div>
@@ -150,8 +150,8 @@
                                 <tr>
                                     <th class="ps-4">Área Geográfica</th>
                                     <th>Temporalidad</th>
-                                    <th>Carga Proyectada</th>
-                                    <th class="text-center">Gestión</th>
+                                    <th>N° Casos proyectados</th>
+                                    <th class="text-center">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="tablaHistorial"></tbody>
@@ -223,8 +223,8 @@
                             <div class="text-muted x-small" style="font-size: 0.75rem;">${r.departamento}</div>
                         </td>
                         <td>
-                            <span class="text-dark">A- ${r.ano}</span><br>
-                            <span class="badge bg-secondary" style="font-size: 0.65rem;">SE ${r.semana}</span>
+                            <span class="text-dark">${r.ano}</span><br>
+                            <span class="badge bg-secondary" style="font-size: 0.65rem;">SEM ${r.semana}</span>
                         </td>
                         <td>
                             <span class="badge-cases fw-bold">${r.casos_predichos.toFixed(1)} casos</span>

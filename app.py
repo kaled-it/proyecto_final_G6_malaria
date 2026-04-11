@@ -21,8 +21,8 @@ db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
 #### CARGA DE MODELOS ML ####
-PATH_MODELO = './modelo_malaria_rf.pkl'
-PATH_TRANSFORMER = './transformer_malaria.pkl'
+PATH_MODELO = './modelos/modelo_malaria_rf.pkl'
+PATH_TRANSFORMER = './modelos/transformer_malaria.pkl'
 
 modelo_rf = joblib.load(PATH_MODELO)
 transformer = joblib.load(PATH_TRANSFORMER)
